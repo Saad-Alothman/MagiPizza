@@ -240,7 +240,7 @@ namespace PerformanceMonitor
         }
         public void RandomCustomers(int numberOfCustomers,bool isCloseToAbranch)
         {
-            //this will create random customers based on the number of customers and if isCloseToAbranch is set to true,
+            //this will create random customers based on the number of customers and if isCloseToAbranch is set to true,h
             // the customers are going to be located around one branch to observe the load balancing over the branches
             CustomerR temp;
             int x,y, customerXCoordinates, customerYCoordinates;
