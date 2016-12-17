@@ -63,7 +63,9 @@ namespace PerformanceMonitor
         
         public DataFeed()
         {
-            this.strConnection = @"Data Source=.\;AttachDbFilename=C:\Users\saad\Desktop\GradProj\WindowsFormsApplication4\PerformanceMonitor\Database1.mdf;Integrated Security=True;";
+            //
+            //this.strConnection = @"Data Source=.\;AttachDbFilename=C:\Users\saad\Desktop\GradProj\WindowsFormsApplication4\PerformanceMonitor\Database1.mdf;Integrated Security=True;";
+            this.strConnection = @"Data Source=.\;Initial Catalog=MagiPizza;Integrated Security=True;";
             this.mycon = new SqlConnection(strConnection);
             this.dbBranches = new List<Branch>();
             this.sqlQuery = "";
@@ -241,7 +243,7 @@ namespace PerformanceMonitor
         public void RandomCustomers(int numberOfCustomers,bool isCloseToAbranch)
         {
             //this will create random customers based on the number of customers and if isCloseToAbranch is set to true,h
-            // the customers are going to be located around one branch to observe the load balancing over the branches
+            // the customers are going to be lo\cated around one branch to observe the load balancing over the branches
             CustomerR temp;
             int x,y, customerXCoordinates, customerYCoordinates;
             string county = "london" , city = "london";
