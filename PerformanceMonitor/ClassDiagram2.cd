@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="PerformanceMonitor.DataFeed" Collapsed="true">
+    <Position X="1" Y="4.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>OAYACAs0gmIGBIt0CAgBC6iIKYYI0QKQElAABcqwEXI=</HashCode>
+      <FileName>DataFeed.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PerformanceMonitor.DFBranch">
+    <Position X="0.5" Y="4" Width="2.25" />
+    <Members>
+      <Property Name="Branch_id" Hidden="true" />
+      <Property Name="DistanceToCustomer" Hidden="true" />
+      <Property Name="QueueTime" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAAAAAIAEAAAEACBAJAAgRAAAIAQAAA=</HashCode>
+      <FileName>DataFeed.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PerformanceMonitor.DFVehicle">
+    <Position X="3.25" Y="0.5" Width="2.25" />
+    <Members>
+      <Property Name="CanAddToCurrentJourney" Hidden="true" />
+      <Property Name="Distance_from_customer" Hidden="true" />
+      <Property Name="HasJourney" Hidden="true" />
+      <Property Name="IfEmptyCanContainOrder" Hidden="true" />
+      <Property Name="IsDirect" Hidden="true" />
+      <Property Name="Jd" Hidden="true" />
+      <Property Name="LastJourney" Hidden="true" />
+      <Property Name="TimeToDeliver" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AABQAAAAAFBAAAAQYEAEABAAAEAAAAAAIAAAABAAUAA=</HashCode>
+      <FileName>DataFeed.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PerformanceMonitor.journeyDestinations">
+    <Position X="3.25" Y="4" Width="2" />
+    <Members>
+      <Property Name="Destination_sequence" Hidden="true" />
+      <Property Name="DestinationId" Hidden="true" />
+      <Property Name="Duration_from_branch" Hidden="true" />
+      <Property Name="Duration_from_last_stop" Hidden="true" />
+      <Property Name="JourneyId" Hidden="true" />
+      <Property Name="Order_id" Hidden="true" />
+      <Property Name="Postcode" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAQACAAEAAgASAAIAAggAAAAMAAAABIAAAAAQAAAAA=</HashCode>
+      <FileName>DataFeed.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PerformanceMonitor.journey">
+    <Position X="5.75" Y="0.5" Width="2" />
+    <Members>
+      <Property Name="Journey_capacity" Hidden="true" />
+      <Property Name="Journey_date" Hidden="true" />
+      <Property Name="Journey_finishTime" Hidden="true" />
+      <Property Name="Journey_startTime" Hidden="true" />
+      <Property Name="JourneyId" Hidden="true" />
+      <Property Name="Vehicle_id" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAgAAEAIQABAAEAAAAAAgAAAAIAAIAAAAI=</HashCode>
+      <FileName>DataFeed.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PerformanceMonitor.distances">
+    <Position X="8.5" Y="0.75" Width="1.5" />
+    <Members>
+      <Property Name="BranchesDistance" Hidden="true" />
+      <Property Name="CustomerId" Hidden="true" />
+      <Property Name="OrderId" Hidden="true" />
+      <Property Name="VehiclesDistance" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAIIAAAACAAAAAAAAAAABAAAAAQIBAAAAA=</HashCode>
+      <FileName>DataFeed.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PerformanceMonitor.CustomerR">
+    <Position X="0.5" Y="0.5" Width="2.25" />
+    <Members>
+      <Property Name="AddressLine1" Hidden="true" />
+      <Property Name="AddressLine2" Hidden="true" />
+      <Property Name="City" Hidden="true" />
+      <Property Name="County" Hidden="true" />
+      <Property Name="Customer_id" Hidden="true" />
+      <Property Name="Email" Hidden="true" />
+      <Property Name="FirstName" Hidden="true" />
+      <Property Name="LastName" Hidden="true" />
+      <Property Name="Postcode" Hidden="true" />
+      <Property Name="Telephone" Hidden="true" />
+      <Property Name="XCoordinate" Hidden="true" />
+      <Property Name="YCoordinate" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>ABQAAEAMACBACAAoBAIAiAQCAIAAAAAAAIAACACQAAg=</HashCode>
+      <FileName>DataFeed.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PerformanceMonitor.DFOrder">
+    <Position X="5.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataFeed.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PerformanceMonitor.Product">
+    <Position X="8.25" Y="3" Width="1.5" />
+    <Members>
+      <Property Name="Price" Hidden="true" />
+      <Property Name="ProcessingTimeM" Hidden="true" />
+      <Property Name="Product_id" Hidden="true" />
+      <Property Name="Product_size" Hidden="true" />
+      <Property Name="Raw_id" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AgABAAIAAQAAAIAAAAAAACAAAAAggIAAAMAAAABAAAA=</HashCode>
+      <FileName>DataFeed.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PerformanceMonitor.Form1">
+    <Position X="11" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>/wAAAAEBCCiAABEAAACBAGGCLEA4AAgAAHQMCQBAgDI=</HashCode>
+      <FileName>Form1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PerformanceMonitor.PieChart">
+    <Position X="9.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAACAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PieChart.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Microsoft Sans Serif" Size="8.25" />
+</ClassDiagram>
