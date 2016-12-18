@@ -222,6 +222,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\cytoscape.min.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -272,6 +273,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="NewFolder1\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -285,9 +287,13 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PerformanceMonitor\PerformanceMonitor.csproj">
-      <Project>{485DEA37-4283-4B40-87DF-1298FC0C90E1}</Project>
-      <Name>PerformanceMonitor</Name>
+    <ProjectReference Include="..\MagiPizza.Domain\MagiPizza.Domain.csproj">
+      <Project>{ab16df6a-db27-4e05-afcb-1b94e80c1fe3}</Project>
+      <Name>MagiPizza.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WindowsFormsApplication4\MagicPizza.csproj">
+      <Project>{3A091847-0DD7-4327-9BC2-783D9F440E7E}</Project>
+      <Name>MagicPizza</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

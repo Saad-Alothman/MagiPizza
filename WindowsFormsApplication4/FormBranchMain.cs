@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using System.Data.Odbc;
 using System.Timers;
 using System.IO;
+using MagiPizza.Domain.Models;
+using MagiPizza.Persistance;
 
 namespace WindowsFormsApplication4
 {

@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
 using System.Data.SqlClient;
-using System.Data.Odbc;
-using WindowsFormsApplication4;
+using System.Linq;
 using System.Timers;
-namespace PerformanceMonitor
+using MagiPizza.Domain.Models;
+
+namespace MagiPizza.Domain.Feed
 {
     //the purpose of this class is to run a simulation for stochastic orders with different customers to 
     //analyze and measure the algorithm behind the process
@@ -43,7 +41,7 @@ namespace PerformanceMonitor
        public List<CustomerR> customersR;//a list that will hold the customers class
        public List<Employee> dbStaff;// a list that will hold the randomly generated staff for every branch
        public List<Branch> dbBranches; // a list that will contain the data about a branch from the database.
-       internal List<Vehicle> dbVehicles;// a list that will hold the data about vehicles for every branch
+        public List<Vehicle> dbVehicles;// a list that will hold the data about vehicles for every branch
        public List<Product> products;// the list of the store products
        public List<DFOrder> queueOfOrders; // a list that will hold the customers orders
        SqlConnection connection;//remove
@@ -53,9 +51,9 @@ namespace PerformanceMonitor
        SqlConnection mycon;
        SqlCommand mycommand;
        SqlDataReader reader;
-       internal string sqlQuery;
+       public string sqlQuery;
        bool isTimedService;//  this is used to put a delay between every customer order to observe the status of the system
-       internal int TimedServiceDelay;// this is used to put a delay between every customer order to observe the status of the system
+        public int TimedServiceDelay;// this is used to put a delay between every customer order to observe the status of the system
        int nextorderIndex;
        Timer itimer ;
         
@@ -97,7 +95,8 @@ namespace PerformanceMonitor
             mycon.Close();
 
         }
-        internal void randomVehiclesForBranches(int min_of_vehicles_per_branch, int max_of_vehicles_per_branch,int min_capacity,int max_capacity)
+
+        public void randomVehiclesForBranches(int min_of_vehicles_per_branch, int max_of_vehicles_per_branch,int min_capacity,int max_capacity)
         {
             // this method generates random vehicles for every branch based on the inputs from the performance monitor application
             Random r = new Random();
@@ -136,7 +135,8 @@ namespace PerformanceMonitor
                 }
             }
         }
-        internal void insertRandomVehicles()
+
+        public void insertRandomVehicles()
         {
             // this method inserts vehicles into the database
             string strStatus;
@@ -162,7 +162,8 @@ namespace PerformanceMonitor
                 mycon.Close();
             }
         }
-        internal void readRandomVehicles()
+
+        public void readRandomVehicles()
         {
             //this method will read the vehicles from the database and assign it to the dbVehicles list variable
             
@@ -643,7 +644,7 @@ namespace PerformanceMonitor
          }
         }
 
-        internal void serveOrders()
+        public void serveOrders()
         {
 
       /*      
@@ -677,7 +678,7 @@ namespace PerformanceMonitor
 
         }
 
-        internal  void onTimerEvent(object source, ElapsedEventArgs e)
+        public  void onTimerEvent(object source, ElapsedEventArgs e)
         {
             serveOrders();
         }
@@ -2048,7 +2049,8 @@ else
             }
             return isStaffAvailable;
         }
-        internal void readProducts()
+
+        public void readProducts()
         {
             Product temp;
 
@@ -2160,7 +2162,7 @@ else
         
         }
 
-        internal List<int> getOrdersBeingServedBy(int brnchInd)
+        public List<int> getOrdersBeingServedBy(int brnchInd)
         {
             DateTime today = DateTime.Now;
             string todayReverse = today.Year+"-"+today.Month+"-"+today.Day;
@@ -2247,8 +2249,7 @@ else
         }
 
 
-
-        internal void randomStaffForBranches(int min, int max)
+        public void randomStaffForBranches(int min, int max)
         {
             string fName= "fEmployee";
             string lName = "lEmployee";
@@ -2274,7 +2275,7 @@ else
             }
         }
 
-        internal void insertRandomStaff()
+        public void insertRandomStaff()
         {
             string strStatus;
 
@@ -2300,7 +2301,7 @@ else
             }
         }
 
-        internal void randomStockLevels(int min, int max)
+        public void randomStockLevels(int min, int max)
         {
             Random r = new Random();
             int branchStockLevel = 0;
@@ -2347,7 +2348,7 @@ else
             }
         }
 
-        internal int getVehicleIndex(int id)
+        public int getVehicleIndex(int id)
         {
             int index=-1;
             for (int i = 0; i < dbVehicles.Count; i++)
@@ -2358,467 +2359,13 @@ else
                 }
             return index;
         }
+
+        public void ClearLists()
+        {
+            dbBranches.Clear();
+            customersR.Clear();
+            //df.customers.Clear();
+            dbVehicles.Clear();
+        }
     }//
-    public class DFBranch
-    {
-        int branch_id;
-        double queueTime;
-        double distanceToCustomer;
-        bool isStaffAvailable;
-        bool isVehiclesAvailable;
-        bool isAvailable;
-        bool enoughStock;
-
-        public bool EnoughStock
-        {
-            get { return enoughStock; }
-            set { enoughStock = value; }
-        }
-
-        public bool IsAvailable
-        {
-            get { return isAvailable; }
-            set { isAvailable = value; }
-        }
-
-        public bool IsVehiclesAvailable
-        {
-            get { return isVehiclesAvailable; }
-            set { isVehiclesAvailable = value; }
-        }
-
-        public bool IsStaffAvailable
-        {
-            get { return isStaffAvailable; }
-            set { isStaffAvailable = value; }
-        }
-
-
-        public double DistanceToCustomer
-        {
-            get { return distanceToCustomer; }
-            set { distanceToCustomer = value; }
-        }
-
-        public double QueueTime
-        {
-            get { return queueTime; }
-            set { queueTime = value; }
-        }
-        public int Branch_id
-        {
-            get { return branch_id; }
-            set { branch_id = value; }
-        }
-        public DFBranch()
-        {
-            this.branch_id = -1;
-            this.queueTime = -1;
-            this.distanceToCustomer = -1;
-            this.IsStaffAvailable = false;
-            this.IsVehiclesAvailable = false;
-            this.IsAvailable = false;
-        }
-    }
-    public class DFVehicle : Vehicle
-    {
-        bool ifEmptyCanContainOrder;
-        double distance_from_customer;
-        bool canAddToCurrentJourney;
-        bool hasJourney;
-        journey lastJourney;
-        List<journeyDestinations> jd;
-        int timeToDeliver;
-        bool isDirect;
-
-        public bool IfEmptyCanContainOrder
-        {
-            get { return ifEmptyCanContainOrder; }
-            set { ifEmptyCanContainOrder = value; }
-        }   
-
-        public bool CanAddToCurrentJourney
-        {
-            get { return canAddToCurrentJourney; }
-            set { canAddToCurrentJourney = value; }
-        }
-
-        public bool IsDirect
-        {
-            get { return isDirect; }
-            set { isDirect = value; }
-        }
-
-        public int TimeToDeliver
-        {
-            get { return timeToDeliver; }
-            set { timeToDeliver = value; }
-        }
-        public double Distance_from_customer
-        {
-            get { return distance_from_customer; }
-            set { distance_from_customer = value; }
-        }
-
-        public journey LastJourney
-        {
-            get { return lastJourney; }
-            set { lastJourney = value; }
-        }
-
-        public List<journeyDestinations> Jd
-        {
-            get { return jd; }
-            set { jd = value; }
-        }
-
-        public bool HasJourney
-        {
-            get { return hasJourney; }
-            set { hasJourney = value; }
-        }
-        public DFVehicle()
-        {
-            this.ifEmptyCanContainOrder = false;
-            this.canAddToCurrentJourney = false;
-            this.hasJourney = false;
-            this.lastJourney = new journey();
-            this.jd = new List<journeyDestinations>();
-        }
-    }
-    public class journeyDestinations
-    {
-        int journeyId;        // 	 	 	 	 	 	
-        int destinationId;
-        string postcode;
-        int destination_sequence;
-        int order_id;
-        int duration_from_last_stop;
-        int duration_from_branch;
-        public journeyDestinations()
-        {
-            this.journeyId = -1;
-            this.postcode = "";
-            this.order_id = -1;
-            this.destination_sequence = -1;
-            this.destinationId = -1;
-            this.duration_from_branch = -1;
-            this.duration_from_last_stop = -1;
-        }
-
-        public int Duration_from_branch
-        {
-            get { return duration_from_branch; }
-            set { duration_from_branch = value; }
-        }
-
-        public int Duration_from_last_stop
-        {
-            get { return duration_from_last_stop; }
-            set { duration_from_last_stop = value; }
-        }
-
-        public int Order_id
-        {
-            get { return order_id; }
-            set { order_id = value; }
-        }
-
-        public int Destination_sequence
-        {
-            get { return destination_sequence; }
-            set { destination_sequence = value; }
-        }
-
-        public string Postcode
-        {
-            get { return postcode; }
-            set { postcode = value; }
-        }
-
-
-        public int DestinationId
-        {
-            get { return destinationId; }
-            set { destinationId = value; }
-        }
-
-        public int JourneyId
-        {
-            get { return journeyId; }
-            set { journeyId = value; }
-        }
-    }
-    public class journey
-    {
-        int journeyId;// 	 	 	
-        int vehicle_id;
-        DateTime journey_date;
-        int journey_capacity;
-        DateTime journey_finishTime;
-        DateTime journey_startTime;
-
-        public journey()
-        {
-            this.journey_capacity = -1;
-            this.journeyId = -1;
-            this.journey_startTime = new DateTime();
-            this.journey_finishTime = new DateTime();
-            this.vehicle_id = -1;
-            this.journey_date = new DateTime();
-        }
-
-        public DateTime Journey_startTime
-        {
-            get { return journey_startTime; }
-            set { journey_startTime = value; }
-        }
-
-        public DateTime Journey_finishTime
-        {
-            get { return journey_finishTime; }
-            set { journey_finishTime = value; }
-        }
-
-        public int Journey_capacity
-        {
-            get { return journey_capacity; }
-            set { journey_capacity = value; }
-        }
-
-        public DateTime Journey_date
-        {
-            get { return journey_date; }
-            set { journey_date = value; }
-        }
-public int Vehicle_id
-{
-  get { return vehicle_id; }
-  set { vehicle_id = value; }
-} 	
-
-        public int JourneyId
-        {
-            get { return journeyId; }
-            set { journeyId = value; }
-        }
-    }
-    public class distances
-    {
-        int customerId;
-        int orderId;
-        List<int[]> vehiclesDistance; // {vid ,distance}
-        List<int[]> branchesDistance; // {bid , distance}
-
-        public distances()
-        {
-            this.customerId = -1;
-            this.orderId = -1;
-            this.vehiclesDistance = new List<int[]>();
-            this.branchesDistance = new List<int[]>();
-        }
-        private List<int[]> BranchesDistance
-        {
-            get { return branchesDistance; }
-            set { branchesDistance = value; }
-        }
-
-        private List<int[]> VehiclesDistance
-        {
-            get { return vehiclesDistance; }
-            set { vehiclesDistance = value; }
-        }
-        public int OrderId
-        {
-            get { return orderId; }
-            set { orderId = value; }
-        }
-        public int CustomerId
-        {
-            get { return customerId; }
-            set { customerId = value; }
-        }
-    }
-    
-    public class DFOrder
-    {
-        public List<int[]> order; // eg {product_id,qty}
-        public int customer_id;
-        public DFOrder()
-        {
-            this.order = new List<int[]>();
-        }
-    }
-    public class Product
-    {
-        int processingTimeM;
-        double price;
-        string product_size;
-        int raw_id;
-        int product_id;
-        int setupTime;
-
-        public int SetupTime
-        {
-            get { return setupTime; }
-            set { setupTime = value; }
-        }
-
-        public int Product_id
-        {
-            get { return product_id; }
-            set { product_id = value; }
-        }
-
-        public int Raw_id
-        {
-            get { return raw_id; }
-            set { raw_id = value; }
-        }
-
-        public string Product_size
-        {
-            get { return product_size; }
-            set { product_size = value; }
-        }
-
-        public double Price
-        {
-            get { return price; }
-            set { price = value; }
-        }
-
-        public int ProcessingTimeM
-        {
-            get { return processingTimeM; }
-            set { processingTimeM = value; }
-        }
-        public Product()
-        {
-            this.Price = -1;
-            this.ProcessingTimeM = -1;
-            this.Product_id = -1;
-            this.Product_size = "";
-            this.Raw_id = -1;
-
-        }
-        public Product(int id,int rawId, string size,int processingTime,double price )
-        {
-            this.Price = -1;
-            this.ProcessingTimeM = -1;
-            this.Product_id = -1;
-            this.Product_size = "";
-            this.Raw_id = -1;
-
-        }
-    }
-    public class CustomerR
-    {
-        int customer_id;
-        string firstName;
-        string lastName;
-        string addressLine1;
-        string addressLine2;
-        string county;
-        string city;
-        string postcode;
-        string email;
-        string telephone;
-        int xCoordinate;
-        int yCoordinate;
-
-        public CustomerR()
-        {
-            this.AddressLine1 = "";
-            this.AddressLine2 = "";
-            this.County = "";
-            this.City = "";
-            this.Customer_id = -1;
-            this.Email = "";
-            this.FirstName = "";
-            this.LastName = "";
-            this.Postcode = "";
-            this.Telephone = "";
-            this.XCoordinate = 0;
-            this.YCoordinate = 0;
-        }
-        public CustomerR(string addr1, string addr2, string cont, string cty, int customId, string eml, string fname, string lname, string pcode, string tel, int x, int y)
-        {
-            this.AddressLine1 = addr1;
-            this.AddressLine2 = addr2;
-            this.County = cont;
-            this.City = cty;
-            this.Customer_id = customId;
-            this.Email = eml;
-            this.FirstName = fname;
-            this.LastName = lname;
-            this.Postcode = pcode;
-            this.Telephone = tel;
-            this.XCoordinate = x;
-            this.YCoordinate = y;
-        }
-        public int YCoordinate
-        {
-            get { return yCoordinate; }
-            set { yCoordinate = value; }
-        }
-        public int XCoordinate
-        {
-            get { return xCoordinate; }
-            set { xCoordinate = value; }
-        }
-        public string Telephone
-        {
-            get { return telephone; }
-            set { telephone = value; }
-        }
-        public string Email
-        {
-            get { return email; }
-            set { email = value; }
-        }
-        public string Postcode
-        {
-            get { return postcode; }
-            set { postcode = value; }
-        }
-        public string County
-        {
-            get { return county; }
-            set { county = value; }
-        }
-        public string City
-        {
-            get { return city; }
-            set { city = value; }
-        }
-        public string AddressLine2
-        {
-            get { return addressLine2; }
-            set { addressLine2 = value; }
-        }
-        public string AddressLine1
-        {
-            get { return addressLine1; }
-            set { addressLine1 = value; }
-        }
-        //addressLine1 	addressLine2 county postcode email telephone xCoordinate yCoordinate
-        public string LastName
-        {
-            get { return lastName; }
-            set { lastName = value; }
-        }
-        public string FirstName
-        {
-            get { return firstName; }
-            set { firstName = value; }
-        }
-        public int Customer_id
-        {
-            get { return customer_id; }
-            set { customer_id = value; }
-        }
-
-    }
-
 }

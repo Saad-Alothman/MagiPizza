@@ -14,6 +14,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerformanceMonitor", "Perfo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GradProjectWeb", "GradProjectWeb\GradProjectWeb.csproj", "{0A645DEA-2349-49BA-AD3C-AD935E76A301}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagiPizza.Domain", "MagiPizza.Domain\MagiPizza.Domain.csproj", "{AB16DF6A-DB27-4E05-AFCB-1B94E80C1FE3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagiPizza.Persistance", "MagiPizza.Persistance\MagiPizza.Persistance.csproj", "{24FD0109-0E7D-47A0-BEAB-6C3C16057C81}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +36,14 @@ Global
 		{0A645DEA-2349-49BA-AD3C-AD935E76A301}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A645DEA-2349-49BA-AD3C-AD935E76A301}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A645DEA-2349-49BA-AD3C-AD935E76A301}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB16DF6A-DB27-4E05-AFCB-1B94E80C1FE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB16DF6A-DB27-4E05-AFCB-1B94E80C1FE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB16DF6A-DB27-4E05-AFCB-1B94E80C1FE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB16DF6A-DB27-4E05-AFCB-1B94E80C1FE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24FD0109-0E7D-47A0-BEAB-6C3C16057C81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24FD0109-0E7D-47A0-BEAB-6C3C16057C81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24FD0109-0E7D-47A0-BEAB-6C3C16057C81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24FD0109-0E7D-47A0-BEAB-6C3C16057C81}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

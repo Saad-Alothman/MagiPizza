@@ -1,4 +1,6 @@
-﻿namespace WindowsFormsApplication4
+﻿using MagiPizza.Domain.Models;
+
+namespace WindowsFormsApplication4
 {
     partial class FormBranchMain
     {
@@ -374,7 +376,7 @@
             // 
             // orderBindingSource
             // 
-            this.orderBindingSource.DataSource = typeof(WindowsFormsApplication4.order);
+            this.orderBindingSource.DataSource = typeof(order);
             // 
             // comboBox1
             // 
@@ -509,7 +511,7 @@
             // 
             // employeeBindingSource
             // 
-            this.employeeBindingSource.DataSource = typeof(WindowsFormsApplication4.Employee);
+            this.employeeBindingSource.DataSource = typeof(Employee);
             // 
             // tbEstatus
             // 
@@ -614,7 +616,7 @@
             // 
             // vehicleBindingSource
             // 
-            this.vehicleBindingSource.DataSource = typeof(WindowsFormsApplication4.Vehicle);
+            this.vehicleBindingSource.DataSource = typeof(Vehicle);
             // 
             // tbVStatus
             // 
@@ -688,7 +690,7 @@
             // 
             // orderBindingSource1
             // 
-            this.orderBindingSource1.DataSource = typeof(WindowsFormsApplication4.order);
+            this.orderBindingSource1.DataSource = typeof(order);
             // 
             // toolStrip1
             // 

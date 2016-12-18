@@ -6,8 +6,11 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using WindowsFormsApplication4;
 using System.Data.SqlClient;
+using MagiPizza.Domain.Feed;
+using MagiPizza.Domain.Models;
+using CustomerR = MagiPizza.Domain.Models.CustomerR;
+
 
 namespace PerformanceMonitor
 {
