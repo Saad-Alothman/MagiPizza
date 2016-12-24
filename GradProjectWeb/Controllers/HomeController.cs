@@ -9,6 +9,7 @@ using GradProjectWeb.Models;
 using MagiPizza.Domain;
 using MagiPizza.Domain.Feed;
 using MagiPizza.Domain.Models;
+using Newtonsoft.Json;
 using WebGrease.Css.Extensions;
 
 namespace GradProjectWeb.Controllers
@@ -29,21 +30,51 @@ namespace GradProjectWeb.Controllers
 
         public ActionResult Poc()
         {
-            ViewBag.Message = "Your contact page.";
 
+            ViewBag.Message = "Your contact page.";
+            PocViewModel pocViewModel = new PocViewModel();
+            pocViewModel.SetDefaultValues();
             return View();
         }
         [HttpPost]
         public ActionResult Poc(PocViewModel pocViewModel)
         {
-            PocResultsViewModel pocResultsViewModel= RunPoc(pocViewModel);
+            
+
+            PocResultsViewModel pocResultsViewModel = RunPoc(pocViewModel);
             ViewData["pocResultsViewModel"] = pocResultsViewModel;
+            string serialized = JsonConvert.SerializeObject(pocResultsViewModel);
+
             return View(pocViewModel);
         }
-
+        
+        public ActionResult PocRun()
+        {
+            PocViewModel pocViewModel = new PocViewModel();
+            pocViewModel.SetDefaultValues();
+            PocResultsViewModel pocResultsViewModel = RunPoc(pocViewModel);
+            string serialized = JsonConvert.SerializeObject(pocResultsViewModel);
+            ViewData["pocResultsViewModel"] = pocResultsViewModel;
+            return View("Poc",pocViewModel);
+        }
+        public ActionResult PocRunReady()
+        {
+            string serialized =System.IO.File.ReadAllText(Server.MapPath("~/Content/pocReadyJSON.txt"));
+            PocViewModel pocViewModel = new PocViewModel();
+            pocViewModel.SetDefaultValues();
+            PocResultsViewModel pocResultsViewModel = (PocResultsViewModel) JsonConvert.DeserializeObject<PocResultsViewModel>(serialized);
+            ViewData["pocResultsViewModel"] = pocResultsViewModel;
+            return View("Poc", pocViewModel);
+        }
         private PocResultsViewModel RunPoc(PocViewModel pocViewModel)
         {
             DataFeed df = new DataFeed();
+
+            df.clearDB();
+            df.MinX = 0;
+            df.MinY = 0;
+            df.MaxY = 1000;
+            df.MaxX = 1000;
             //if it is not the first time to test this will cause a problem if not cleared
             df.ClearLists();
             CreateAndInsertRandomData(pocViewModel, df);
@@ -80,9 +111,11 @@ namespace GradProjectWeb.Controllers
             df.serveOrders();
             //df.readPostCodes();
             var piechart = drawPieChart(df);
+            
+            Bitmap image = plotPoints(df, df.dbBranches, df.customersR, df.queueOfOrders.ToList());
             DiGraph diGraph = GetGraph(df, df.dbBranches, df.customersR, df.queueOfOrders.ToList());
             string statText = GetStatText(df, pocViewModel);
-            PocResultsViewModel pocResultsViewModel = new PocResultsViewModel(piechart, diGraph, statText);
+            PocResultsViewModel pocResultsViewModel = new PocResultsViewModel(piechart, diGraph, statText, image);
             return pocResultsViewModel;
         }
 
@@ -113,61 +146,55 @@ namespace GradProjectWeb.Controllers
                 branchesInfo.Add(temp);
             }
 
-            //  qTimes.Add((decimal)df.getBranchQueueTime(df.getOrdersBeingServedBy(b.Branch_id)));            
-            Random rand = new Random();
-            int x;
+            
             Color white = new Color();
-            decimal[] values = { rand.Next(1, 30), 10, rand.Next(1, 30), rand.Next(1, 30), rand.Next(1, 30), rand.Next(1, 30) };
             PieChart pchart = new PieChart();
             Bitmap pic = pchart.Draw(white, 100, 100, branchesInfo);
-            //pictureBox1.Image = pic;
-            //foreach (string[] s in pchart.branchAndColor)
-            //    listBox1.Items.Add(" bId:" + s[0] + "," + s[1]);
-            //label11.Text += ;
-            //MessageBox.Show( pchart.branchAndColor[0][1]);
+
             return pic;
         }
         public Bitmap plotPoints(DataFeed df, List<Branch> branches, List<CustomerR> customersR, List<DFOrder> orders)
         {
 
             // just make the window big enough to fit this graph...
-            int width = 500;
-            int height = 350;
 
             // add 5 so the bars fit properly
-            int x = 240; // the position of the X axis
-            int y = 0; // the position of the Y axis
-
-            Bitmap bmp = new Bitmap(360, 290);
+            int x = 5; // the position of the X axis
+            int y = 5; // the position of the Y axis
+            int graphicWidth=1000;
+            int graphicHeight= 1000;
+            Bitmap bmp = new Bitmap(graphicWidth, graphicHeight);
             Graphics graphics = Graphics.FromImage(bmp);
-
-            graphics.DrawLine(new Pen(Color.Red, 2), 5, 5, 5, 250);
-            graphics.DrawLine(new Pen(Color.Red, 2), 5, 250, 300, 250);
+            Point xAxispoint1=new Point(x, graphicHeight- y);
+            Point xAxispoint2=new Point(graphicWidth , graphicHeight - y);
+            Point yAxispoint1 = new Point(x, y);
+            Point yAxispoint2 = new Point(x, graphicHeight);
+            graphics.DrawLine(new Pen(Color.Blue, 2), xAxispoint1,xAxispoint2);
+            graphics.DrawLine(new Pen(Color.Yellow, 2), yAxispoint1, yAxispoint2);
             // let's draw a coordinate equivalent to (20,30) (20 up, 30 across)
-            int customerX, customerY, customerInd;
-            List<int> ordersAssignedToBranch;
             df.readDBOrders();
-            bool found;
             foreach (var c in customersR)
             {
-
-                graphics.DrawString("o", new Font("Calibg.ri", 12), new SolidBrush(Color.Aqua), y + c.XCoordinate * 10, x - c.YCoordinate * 10);
-                graphics.DrawString(c.Customer_id.ToString(), new Font("Calibg.ri", 7), new SolidBrush(Color.Aqua), y + (c.XCoordinate * 10) + 5, x - c.YCoordinate * 10);
+                int cx = y + c.XCoordinate;
+                int cy = x - c.YCoordinate;
+                graphics.DrawString("o", new Font("Calibg.ri", 12), new SolidBrush(Color.Aqua), cx,cy);
+                graphics.DrawString(c.Customer_id.ToString(), new Font("Calibg.ri", 7), new SolidBrush(Color.Aqua), cx , cy+5);
 
             }
             foreach (Branch b in branches)
             {
-                ordersAssignedToBranch = df.getOrdersBeingServedBy(b.Branch_id);
-                graphics.DrawString("o", new Font("Calibg.ri", 12), new SolidBrush(Color.Red), y + int.Parse(b.Branch_postcode.Remove(2)) * 10, x - int.Parse(b.Branch_postcode.Remove(0, 3)) * 10);
-                graphics.DrawString(b.Branch_id.ToString(), new Font("Calibg.ri", 5), new SolidBrush(Color.Red), 5 + y + int.Parse(b.Branch_postcode.Remove(2)) * 10, x - int.Parse(b.Branch_postcode.Remove(0, 3)) * 10);
+                int bx = y + int.Parse(b.Branch_postcode.Remove(df.MaxX.ToString().Length - 1));
+                int by = x - int.Parse(b.Branch_postcode.Remove(0, df.MaxX.ToString().Length + 1));
+                graphics.DrawString("o", new Font("Calibg.ri", 12), new SolidBrush(Color.Red), y +  bx, by);
+                graphics.DrawString(b.Branch_id.ToString(), new Font("Calibg.ri", 5), new SolidBrush(Color.Red), 5 + bx, by);
 
 
 
-
+                var ordersAssignedToBranch = df.getOrdersBeingServedBy(b.Branch_id);
                 foreach (order o in df.dbOrders)
                 {
 
-                    found = false;
+                    var found = false;
                     for (int i = 0; i < ordersAssignedToBranch.Count; i++)
                     {
                         if (ordersAssignedToBranch[i] == o.Order_id)
@@ -176,10 +203,16 @@ namespace GradProjectWeb.Controllers
                     if (found)
                     {
 
-                        customerInd = df.getCustomerIndex(o.Customer_id);
-                        customerX = customersR[customerInd].XCoordinate;
-                        customerY = customersR[customerInd].YCoordinate;
-                        graphics.DrawLine(new Pen(Color.Green, 1), y + customerX * 10 + 10, x - customerY * 10 + 10, y + int.Parse(b.Branch_postcode.Remove(2)) * 10 + 10, x - int.Parse(b.Branch_postcode.Remove(0, 3)) * 10 + 10);
+                        var customerInd = df.getCustomerIndex(o.Customer_id);
+                        var customerX = customersR[customerInd].XCoordinate;
+                        var customerY = customersR[customerInd].YCoordinate;
+                        int branchX = int.Parse(b.Branch_postcode.Remove(df.MaxX.ToString().Length - 1));
+                        int branchY = int.Parse(b.Branch_postcode.Remove(0, df.MaxX.ToString().Length + 1));
+                        /*
+                         int bx = y + int.Parse(b.Branch_postcode.Remove(df.MaxX.ToString().Length - 1));
+                int by = x - int.Parse(b.Branch_postcode.Remove(0, df.MaxX.ToString().Length + 1));
+                         */
+                        graphics.DrawLine(new Pen(Color.Green, 1), y + customerX * 10 + 10, x - customerY * 10 + 10, y + branchX * 10 + 10, x - branchY * 10 + 10);
                     }
                 }
 
@@ -192,16 +225,20 @@ namespace GradProjectWeb.Controllers
         {
             DiGraph diGraph = new DiGraph();
             df.readDBOrders();
-            customersR.ForEach(c=> diGraph.Add(new DiGraphVertix(c.Customer_id, c.XCoordinate, c.YCoordinate,VertixType.Client)));
+            customersR.ForEach(c => diGraph.Add(new DiGraphNode(c.Customer_id, c.XCoordinate, c.YCoordinate, $"Cust:{c.Customer_id}", VertixType.Client)));
+
             foreach (Branch b in branches)
             {
                 var ordersAssignedToBranchIds = df.getOrdersBeingServedBy(b.Branch_id);
                 List<order> ordersAssignedToBranchList = df.dbOrders.Where(o => ordersAssignedToBranchIds.Contains(o.Order_id)).ToList();
-
-                diGraph.Add(new DiGraphVertix(b.Branch_id,b.X,b.Y,VertixType.Branch, ordersAssignedToBranchList.Count));
+                var x =Convert.ToInt32(b.Branch_postcode.Remove(df.MaxX.ToString().Length - 1)) ;
+                var y = Convert.ToInt32(b.Branch_postcode.Remove(0, df.MaxX.ToString().Length + 1));
+                
+                diGraph.Add(new DiGraphNode(b.Branch_id, x, y, $"B{b.Branch_id}", VertixType.Branch, ordersAssignedToBranchList.Count));
                 ordersAssignedToBranchList.ForEach(o=> diGraph.AddEdge(o.Customer_id, b.Branch_id));
             }
-          
+
+            diGraph.Validate();
             return diGraph;
 
         }

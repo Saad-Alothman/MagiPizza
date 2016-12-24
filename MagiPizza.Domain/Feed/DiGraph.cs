@@ -19,35 +19,40 @@ namespace MagiPizza.Domain.Feed
 
         public int Scale { get; set; }
 
-        public void Add(DiGraphVertix diGraphVertix)
+        public void Add(DiGraphNode diGraphNode)
         {
-            diGraphVertixes.Add(diGraphVertix);
+            DiGraphNodes.Add(diGraphNode);
         }
 
-        public List<DiGraphVertix>  diGraphVertixes = new List<DiGraphVertix>();
+        public List<DiGraphNode>  DiGraphNodes = new List<DiGraphNode>();
      public   List<DiGraphEdge> diGraphEdges = new List<DiGraphEdge>();
 
         public void AddEdge(int fromVertixId, int toVertixId)
         {
             diGraphEdges.Add(new DiGraphEdge(fromVertixId,toVertixId));        }
+
+        public void Validate()
+        {
+            
+        }
     }
-    public class DiGraphVertix
+    public class DiGraphNode
     {
-        public DiGraphVertix(int id, int x, int y, VertixType vertixType, int size=1):this(id,x,y)
+        public DiGraphNode(int id, int x, int y,string label, VertixType vertixType, int size=1)
         {
             this.VertixType = vertixType;
-        }
-
-
-        public DiGraphVertix(int id, int x, int y)
-        {
+            this.Label = label;
             this.Id = id;
-            this.Label = id.ToString();
             this.X = x;
-            this.Y  = y;
-
+            this.Y = y;
         }
 
+
+
+        public DiGraphNode()
+        {
+            
+        }
         public VertixType VertixType { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
@@ -64,6 +69,10 @@ namespace MagiPizza.Domain.Feed
             this.DstinationNodeId=toNodeId;
         }
 
+        public DiGraphEdge()
+        {
+            
+        }
         public int SourceNodeId { get; set; }
         public int DstinationNodeId { get; set; }
     }

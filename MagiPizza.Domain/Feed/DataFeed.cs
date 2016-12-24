@@ -29,10 +29,36 @@ namespace MagiPizza.Domain.Feed
         * the locations of the customer 
         * and the branches ,this represents for example the city grid,this is used for the purpose of this simulation where no actual addresses does exist*/
         
-       const int MaxX = 20; 
-       const int MaxY = 20;
-       const int MinX = 0;
-       const int MinY = 0;
+       public int MaxX = 20;
+
+        public string XFormat
+        {
+            get
+            {
+                string result = "";
+                for (int j = 0; j < MaxX.ToString().Length; j++)
+                {
+                    result += "0";
+                }
+                return result;
+            }
+        }
+        public string YFormat
+        {
+            get
+            {
+                string result = "";
+                for (int j = 0; j < MaxY.ToString().Length; j++)
+                {
+                    result += "0";
+                }
+                return result;
+            }
+        }
+
+        public int MaxY = 20;
+        public int MinX = 0;
+        public int MinY = 0;
        const int MAXIMUM_LAST_JD_Delay_M = 100;// The maximum delay last journey destination of a journey,this is used when inserting a destination before the last destination this is used for finding the best fit DVR
        public List<order> dbOrders; // the orders that are held in the database,this is used for the graph plotting only
        public List<string[]> storeCoordinates;// this is used for the purpose of this simulation where no actual addresses does exist
@@ -246,36 +272,39 @@ namespace MagiPizza.Domain.Feed
             //this will create random customers based on the number of customers and if isCloseToAbranch is set to true,h
             // the customers are going to be lo\cated around one branch to observe the load balancing over the branches
             CustomerR temp;
-            int x,y, customerXCoordinates, customerYCoordinates;
             string county = "london" , city = "london";
-            string xString, yString;
+            string yString;
             int  branchRad,branchX,branchY;
             branchRad = 5; //the radius of the customers location from the branch
 
             Random r = new Random();
-            int mincX,maxcX,maxcY,mincY;
-            string customerFName,customerLName,customerAddress,customerContact;
             for (int i = 0; i < numberOfCustomers;i++)
             {
                 temp = new CustomerR();
-                customerFName = "customer";
-                customerLName = "Number" + (i+1);
+                var customerFName = "customer";
+                var customerLName = "Number" + (i+1);
+                int y;
+                int x;
                 if (isCloseToAbranch)
                 {
-                    branchX = int.Parse(dbBranches[0].Branch_postcode.Remove(2));
-                    branchY = int.Parse(dbBranches[0].Branch_postcode.Remove(0,3));
+                    branchX = int.Parse(dbBranches[0].Branch_postcode.Remove(MaxX.ToString().Length-1));
+                    branchY = int.Parse(dbBranches[0].Branch_postcode.Remove(0, MaxX.ToString().Length+1));
+                    int mincX;
                     if (branchX - branchRad < 0)
                         mincX = 0;
                     else
                         mincX = branchX - branchRad;
+                    int maxcX;
                     if (branchX + branchRad > MaxX)
                         maxcX = MaxX;
                     else
                         maxcX = branchX + branchRad;
+                    int mincY;
                     if (branchY - branchRad < 0)
                         mincY = 0;
                     else
                         mincY = branchY - branchRad;
+                    int maxcY;
                     if (branchY + branchRad > MaxY)
                         maxcY = MaxY;
                     else
@@ -289,16 +318,9 @@ namespace MagiPizza.Domain.Feed
                     x = r.Next(MinX, MaxX);
                     y = r.Next(MinY, MaxY);
                 }
-                if (x < 10)
-                    xString = "0" + x.ToString();
-                else
-                    xString = x.ToString();
-                if (y < 10)
-                    yString = "0" + y.ToString();
-                else
-                    yString = y.ToString();
                 
-                customerContact = "07595946193";
+                
+                var customerContact = "07595946193";
                 temp.AddressLine1 = customerFName + customerLName + " Address1";
                 temp.AddressLine2 = customerFName + customerLName + " Address2";
                 temp.City = city;
@@ -306,7 +328,7 @@ namespace MagiPizza.Domain.Feed
                 temp.Email = customerFName + customerLName + "@" + customerLName + ".co.uk";
                 temp.FirstName = customerFName;
                 temp.LastName = customerLName;
-                temp.Postcode = xString + "," + yString; ;
+                temp.Postcode = x.ToString(XFormat) + "," + y.ToString(YFormat); ;
                 temp.Telephone = customerContact;
                 temp.XCoordinate = x;
                 temp.YCoordinate = y;
@@ -486,30 +508,17 @@ namespace MagiPizza.Domain.Feed
         {
            // this method will generate random branches with their information based on the number of stores
             // this is used for the performance monitor app
-            Branch temp;
-            
-            int x, y, storeXCoordinates, storeYCoordinates;
-            string  xString, yString;
+
             Random r = new Random();
             //1 x coordinates //2 y coordinates
-            int[] store = new int[3];
+         
             for (int i = 0; i < numberOfStores;i++)
             {
-                temp = new Branch();
+                var temp = new Branch();
                 temp.IsAvialable = true;
-
-                x = r.Next(MinX, MaxX);
-                y = r.Next(MinY, MaxY);
-                if (x < 10)
-                    xString = "0" + x.ToString();
-                else
-                    xString = x.ToString();
-                if (y < 10)
-                    yString = "0" + y.ToString();
-                else
-                    yString = y.ToString();
-
-                temp.Branch_postcode = xString+","+yString;
+                var x = r.Next(MinX, MaxX);
+                var y = r.Next(MinY, MaxY);
+                temp.Branch_postcode = x.ToString(XFormat) + ","+ y.ToString(YFormat);
                 dbBranches.Add(temp);
                 
             }      
@@ -726,12 +735,12 @@ namespace MagiPizza.Domain.Feed
             {
                 if (v.IsAvailable)
                 {
-                    //prevCustomerCo[0] = int.Parse(v.Jd[v.Jd.Count-1].Postcode.Remove(2));
-                    //prevCustomerCo[1] = int.Parse(v.Jd[v.Jd.Count-1].Postcode.Remove(2));
+                    //prevCustomerCo[0] = int.Parse(v.Jd[v.Jd.Count-1].Postcode.Remove(MaxX.ToString().Length - 1));
+                    //prevCustomerCo[1] = int.Parse(v.Jd[v.Jd.Count-1].Postcode.Remove(MaxX.ToString().Length - 1));
                     //vehicledistance = calcDistance(customerco,prevCustomerCo);
                     brnchInd = getbranchIndex(v.BranchId);
-                    branchx = int.Parse(dbBranches[brnchInd].Branch_postcode.Remove(2));
-                    branchy = int.Parse(dbBranches[brnchInd].Branch_postcode.Remove(0, 3));
+                    branchx = int.Parse(dbBranches[brnchInd].Branch_postcode.Remove(MaxX.ToString().Length - 1));
+                    branchy = int.Parse(dbBranches[brnchInd].Branch_postcode.Remove(0, MaxX.ToString().Length+1));
                     branchco[0] = branchx;
                     branchco[1] = branchy;
                     //branchdistance = calcDistance(customerco, branchco);
@@ -749,8 +758,8 @@ namespace MagiPizza.Domain.Feed
                         vIdAndInsertionIndexTemp[1] = temp[2];
                         vIdAndInsertionIndex.Add(vIdAndInsertionIndexTemp);
 
-                        //prevCustomerCo[0] = int.Parse(v.Jd[(v.Jd.Count - 1)].Postcode.Remove(2));
-                        //prevCustomerCo[1] = int.Parse(v.Jd[(v.Jd.Count - 1)].Postcode.Remove(0, 3));
+                        //prevCustomerCo[0] = int.Parse(v.Jd[(v.Jd.Count - 1)].Postcode.Remove(MaxX.ToString().Length - 1));
+                        //prevCustomerCo[1] = int.Parse(v.Jd[(v.Jd.Count - 1)].Postcode.Remove(0, MaxX.ToString().Length+1));
                         vehicledistance = calcDistance(customerco, prevCustomerCo);
                         v.Distance_from_customer = vehicledistance;
                         v.TimeToDeliver = (int)Math.Ceiling(((v.Distance_from_customer * 1000 / vehicleAvgSpeed) * 60) + v.Jd[vIdAndInsertionIndexTemp[1]].Duration_from_branch);
@@ -846,8 +855,8 @@ namespace MagiPizza.Domain.Feed
                     // add to the journey finish time the new added times to the new customer
                     
                     int brnchInd = getbranchIndex(bestVehicle.BranchId);
-                    int branchx = int.Parse(dbBranches[brnchInd].Branch_postcode.Remove(2));
-                    int branchy = int.Parse(dbBranches[brnchInd].Branch_postcode.Remove(0, 3));
+                    int branchx = int.Parse(dbBranches[brnchInd].Branch_postcode.Remove(MaxX.ToString().Length - 1));
+                    int branchy = int.Parse(dbBranches[brnchInd].Branch_postcode.Remove(0, MaxX.ToString().Length+1));
                     int[] branchCo = new int[2];
                     int[] CustomerCo = new int[2];
                     CustomerCo[0] = customersR[customerIndex].XCoordinate;
@@ -870,11 +879,11 @@ namespace MagiPizza.Domain.Feed
                          */
 
                         prevCustomerCo = new int[2];
-                        prevCustomerCo[0] = int.Parse(bestVehicle.Jd[(journeyinsertionPoint)].Postcode.Remove(2));
-                        prevCustomerCo[1] = int.Parse(bestVehicle.Jd[(journeyinsertionPoint)].Postcode.Remove(0, 3));
+                        prevCustomerCo[0] = int.Parse(bestVehicle.Jd[(journeyinsertionPoint)].Postcode.Remove(MaxX.ToString().Length - 1));
+                        prevCustomerCo[1] = int.Parse(bestVehicle.Jd[(journeyinsertionPoint)].Postcode.Remove(0, MaxX.ToString().Length+1));
                         int[] nextCCo = new int[2];
-                        nextCCo[0] = int.Parse(bestVehicle.Jd[(journeyinsertionPoint+1)].Postcode.Remove(2));
-                        nextCCo[1] = int.Parse(bestVehicle.Jd[(journeyinsertionPoint+1)].Postcode.Remove(0, 3));
+                        nextCCo[0] = int.Parse(bestVehicle.Jd[(journeyinsertionPoint+1)].Postcode.Remove(MaxX.ToString().Length - 1));
+                        nextCCo[1] = int.Parse(bestVehicle.Jd[(journeyinsertionPoint+1)].Postcode.Remove(0, MaxX.ToString().Length+1));
                         distanceFromCustomerToPrevCustomer = calcDistance(prevCustomerCo,CustomerCo);
                         double prevCustomerFrombranch = calcDistance(branchCo, prevCustomerCo);
                         double newCustomerToNextCustomer = calcDistance(nextCCo, CustomerCo);
@@ -916,11 +925,11 @@ namespace MagiPizza.Domain.Feed
                     //else if ((journeyinsertionPoint+1) == bestVehicle.Jd[bestVehicle.Jd.Count - 1].Destination_sequence)
                     //{
                     //    int[] prevPrevCustomerCo = new int[2];
-                    //    prevPrevCustomerCo[0]=int.Parse(bestVehicle.Jd[(journeyinsertionPoint-1)].Postcode.Remove(2));
-                    //    prevPrevCustomerCo[1] = int.Parse(bestVehicle.Jd[(journeyinsertionPoint-1)].Postcode.Remove(0, 3));
+                    //    prevPrevCustomerCo[0]=int.Parse(bestVehicle.Jd[(journeyinsertionPoint-1)].Postcode.Remove(MaxX.ToString().Length - 1));
+                    //    prevPrevCustomerCo[1] = int.Parse(bestVehicle.Jd[(journeyinsertionPoint-1)].Postcode.Remove(0, MaxX.ToString().Length+1));
                     //    prevCustomerCo = new int[2];
-                    //    prevCustomerCo[0] = int.Parse(bestVehicle.Jd[(journeyinsertionPoint)].Postcode.Remove(2));
-                    //    prevCustomerCo[1] = int.Parse(bestVehicle.Jd[(journeyinsertionPoint)].Postcode.Remove(0, 3));
+                    //    prevCustomerCo[0] = int.Parse(bestVehicle.Jd[(journeyinsertionPoint)].Postcode.Remove(MaxX.ToString().Length - 1));
+                    //    prevCustomerCo[1] = int.Parse(bestVehicle.Jd[(journeyinsertionPoint)].Postcode.Remove(0, MaxX.ToString().Length+1));
                     //    distanceFromCustomerToPrevCustomer = calcDistance(prevCustomerCo, CustomerCo);
                     //    double distanceFromPrevPrevToPrev = calcDistance(prevPrevCustomerCo, CustomerCo);
 
@@ -960,14 +969,16 @@ namespace MagiPizza.Domain.Feed
                     else
                     {
                          brnchInd = getbranchIndex(bestVehicle.BranchId);
-                         branchx = int.Parse(dbBranches[brnchInd].Branch_postcode.Remove(2));
-                         branchy = int.Parse(dbBranches[brnchInd].Branch_postcode.Remove(0, 3));
+                        //branchX = int.Parse(dbBranches[0].Branch_postcode.Remove(MaxX.ToString().Length - 1));
+                        //branchY = int.Parse(dbBranches[0].Branch_postcode.Remove(0, MaxX.ToString().Length+1));
+                        branchx = int.Parse(dbBranches[brnchInd].Branch_postcode.Remove(MaxX.ToString().Length - 1));
+                         branchy = int.Parse(dbBranches[brnchInd].Branch_postcode.Remove(0, MaxX.ToString().Length+1));
                         branchCo = new int[2];
                         branchCo[0] = branchx;
                         branchCo[1] = branchy;
                         prevCustomerCo = new int[2];
-                        prevCustomerCo[0] = int.Parse(bestVehicle.Jd[(bestVehicle.Jd.Count - 1)].Postcode.Remove(2));
-                        prevCustomerCo[1] = int.Parse(bestVehicle.Jd[(bestVehicle.Jd.Count - 1)].Postcode.Remove(0, 3));
+                        prevCustomerCo[0] = int.Parse(bestVehicle.Jd[(bestVehicle.Jd.Count - 1)].Postcode.Remove(MaxX.ToString().Length - 1));
+                        prevCustomerCo[1] = int.Parse(bestVehicle.Jd[(bestVehicle.Jd.Count - 1)].Postcode.Remove(0, MaxX.ToString().Length+1));
                         double prevCustomerFrombranch = calcDistance(branchCo, prevCustomerCo);
 
                         TimeSpan durationFromBranchToPrevCustomer = new TimeSpan(0, (int)((prevCustomerFrombranch * 1000 / vehicleAvgSpeed) * 60), 0);
@@ -997,7 +1008,7 @@ namespace MagiPizza.Domain.Feed
                         mycommand.CommandText = journey_destinationsQuery;
                         mycommand.ExecuteNonQuery();
                     }
-                    //nextCustomerCo[0] = int.Parse(bestVehicle.Jd[(bestVehicle.Jd[insertion - 1)].Postcode.Remove(2));
+                    //nextCustomerCo[0] = int.Parse(bestVehicle.Jd[(bestVehicle.Jd[insertion - 1)].Postcode.Remove(MaxX.ToString().Length - 1));
                     
                     
 
@@ -1245,27 +1256,27 @@ namespace MagiPizza.Domain.Feed
             //need to add MAXIMUM_LAST_JD_Delay_M as a constraint
            // int bIndex= getbranchIndex(v.BranchId);
             int[] jrnydCo= new int[2];// 3 is for the insertion point
-            jrnydCo[0] = int.Parse(list[0].Postcode.Remove(2));
-            jrnydCo[1] = int.Parse(list[0].Postcode.Remove(0, 3));
+            jrnydCo[0] = int.Parse(list[0].Postcode.Remove(MaxX.ToString().Length - 1));
+            jrnydCo[1] = int.Parse(list[0].Postcode.Remove(0, MaxX.ToString().Length+1));
             //jrnydCo[2] = 0;
             int[] jrnydCoMin = new int[3];// 3 is for the insertion point
-            jrnydCoMin[0] = int.Parse(list[list.Count-1].Postcode.Remove(2));
-            jrnydCoMin[1] = int.Parse(list[list.Count - 1].Postcode.Remove(0, 3));
+            jrnydCoMin[0] = int.Parse(list[list.Count-1].Postcode.Remove(MaxX.ToString().Length - 1));
+            jrnydCoMin[1] = int.Parse(list[list.Count - 1].Postcode.Remove(0, MaxX.ToString().Length+1));
             jrnydCoMin[2] = list.Count-1;
             double shortestAllowedDistance = calcDistance(customerco, jrnydCoMin);
             double jdDistance;
             for (int i = 0; i < list.Count;i++ )
             {
                 jrnydCo = new int[2];
-                jrnydCo[0] = int.Parse(list[i].Postcode.Remove(2));
-                jrnydCo[1] = int.Parse(list[i].Postcode.Remove(0, 3));
+                jrnydCo[0] = int.Parse(list[i].Postcode.Remove(MaxX.ToString().Length - 1));
+                jrnydCo[1] = int.Parse(list[i].Postcode.Remove(0, MaxX.ToString().Length+1));
                 
                 jdDistance = calcDistance(customerco, jrnydCo);
                 if (jdDistance < shortestAllowedDistance)
                 {
                     shortestAllowedDistance = jdDistance;
-                    jrnydCoMin[0] = int.Parse(list[i].Postcode.Remove(2));
-                    jrnydCoMin[1] = int.Parse(list[i].Postcode.Remove(0, 3));
+                    jrnydCoMin[0] = int.Parse(list[i].Postcode.Remove(MaxX.ToString().Length - 1));
+                    jrnydCoMin[1] = int.Parse(list[i].Postcode.Remove(0, MaxX.ToString().Length+1));
                     jrnydCoMin[2] = i;
                 }
 
@@ -1317,20 +1328,20 @@ namespace MagiPizza.Domain.Feed
             {
                 if (v.IsAvailable)
                 {
-                    //prevCustomerCo[0] = int.Parse(v.Jd[v.Jd.Count-1].Postcode.Remove(2));
-                    //prevCustomerCo[1] = int.Parse(v.Jd[v.Jd.Count-1].Postcode.Remove(2));
+                    //prevCustomerCo[0] = int.Parse(v.Jd[v.Jd.Count-1].Postcode.Remove(MaxX.ToString().Length - 1));
+                    //prevCustomerCo[1] = int.Parse(v.Jd[v.Jd.Count-1].Postcode.Remove(MaxX.ToString().Length - 1));
                     //vehicledistance = calcDistance(customerco,prevCustomerCo);
                     brnchInd = getbranchIndex(v.BranchId);
-                    branchx = int.Parse(dbBranches[brnchInd].Branch_postcode.Remove(2));
-                    branchy = int.Parse(dbBranches[brnchInd].Branch_postcode.Remove(0, 3));
+                    branchx = int.Parse(dbBranches[brnchInd].Branch_postcode.Remove(MaxX.ToString().Length - 1));
+                    branchy = int.Parse(dbBranches[brnchInd].Branch_postcode.Remove(0, MaxX.ToString().Length+1));
                     branchco[0] = branchx;
                     branchco[1] = branchy;
                     branchdistance = calcDistance(customerco, branchco);
                     if (v.HasJourney)
                     {
                         /**/
-                        prevCustomerCo[0] = int.Parse(v.Jd[(v.Jd.Count - 1)].Postcode.Remove(2));
-                        prevCustomerCo[1] = int.Parse(v.Jd[(v.Jd.Count - 1)].Postcode.Remove(0, 3));
+                        prevCustomerCo[0] = int.Parse(v.Jd[(v.Jd.Count - 1)].Postcode.Remove(MaxX.ToString().Length - 1));
+                        prevCustomerCo[1] = int.Parse(v.Jd[(v.Jd.Count - 1)].Postcode.Remove(0, MaxX.ToString().Length+1));
                         vehicledistance = calcDistance(customerco, prevCustomerCo);
                         v.Distance_from_customer = vehicledistance;
                         v.TimeToDeliver = (int)Math.Ceiling(((v.Distance_from_customer * 1000 / vehicleAvgSpeed) * 60) + v.Jd[v.Jd.Count - 1].Duration_from_branch);
@@ -1424,14 +1435,14 @@ namespace MagiPizza.Domain.Feed
                 if (bestVehicle.CanAddToCurrentJourney)
                 {   
                         int brnchInd = getbranchIndex(bestVehicle.BranchId);
-                        int branchx = int.Parse(dbBranches[brnchInd].Branch_postcode.Remove(2));
-                        int branchy = int.Parse(dbBranches[brnchInd].Branch_postcode.Remove(0,3));
+                        int branchx = int.Parse(dbBranches[brnchInd].Branch_postcode.Remove(MaxX.ToString().Length - 1));
+                        int branchy = int.Parse(dbBranches[brnchInd].Branch_postcode.Remove(0, MaxX.ToString().Length+1));
                     int[] branchCo = new int[2];
                     branchCo[0] = branchx;
                     branchCo[1] = branchy;
                     int[] prevCustomerCo = new int[2];
-                    prevCustomerCo[0] = int.Parse(bestVehicle.Jd[(bestVehicle.Jd.Count-1)].Postcode.Remove(2));
-                    prevCustomerCo[1] = int.Parse(bestVehicle.Jd[(bestVehicle.Jd.Count-1)].Postcode.Remove(0,3));
+                    prevCustomerCo[0] = int.Parse(bestVehicle.Jd[(bestVehicle.Jd.Count-1)].Postcode.Remove(MaxX.ToString().Length - 1));
+                    prevCustomerCo[1] = int.Parse(bestVehicle.Jd[(bestVehicle.Jd.Count-1)].Postcode.Remove(0, MaxX.ToString().Length+1));
                     double prevCustomerFrombranch = calcDistance(branchCo,prevCustomerCo);
 
                     TimeSpan durationFromBranchToPrevCustomer = new TimeSpan(0, (int)((prevCustomerFrombranch * 1000 / vehicleAvgSpeed)*60), 0);
@@ -1917,8 +1928,8 @@ else
                 // get the distance
                 int brnchInd = getbranchIndex(branchId);
                 int customerInd = getCustomerIndex(order.customer_id);
-                int branchx = int.Parse(dbBranches[brnchInd].Branch_postcode.Remove(2));
-                int branchy = int.Parse(dbBranches[brnchInd].Branch_postcode.Remove(0, 3));
+                int branchx = int.Parse(dbBranches[brnchInd].Branch_postcode.Remove(MaxX.ToString().Length - 1));
+                int branchy = int.Parse(dbBranches[brnchInd].Branch_postcode.Remove(0, MaxX.ToString().Length+1));
                 int customerX = customersR[customerInd].XCoordinate;
                 int customerY = customersR[customerInd].YCoordinate;
                 int[] branchco = { branchx, branchy };
